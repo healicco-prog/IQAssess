@@ -10,6 +10,8 @@ import {
   Stethoscope, Layers, Lock, EyeOff, Home
 } from 'lucide-react';
 
+import { supabase } from '../lib/supabase';
+
 // Define Interface for component props
 interface LandingPageProps {
   onGetStarted: (customSession?: { username: string; email: string; role: string; institution: string; version?: 'Standard' | 'Premium' }) => void;
@@ -434,6 +436,21 @@ export function LandingPage({ onGetStarted, onSelectTab, subView = 'home', onCha
   // Selected blog for Read Modal
   const [activeBlog, setActiveBlog] = useState<BlogPost | null>(null);
   
+  // Real database fetch for blogs
+  const [dbBlogs, setDbBlogs] = useState<BlogPost[]>([]);
+  useEffect(() => {
+    async function fetchBlogs() {
+      const { data, error } = await supabase.from('blogs').select('*');
+      if (!error && data) {
+        setDbBlogs(data);
+      }
+    }
+    fetchBlogs();
+  }, []);
+
+  // Merge dbBlogs with SAMPLE_BLOGS for display (db overrides local if found)
+  const allBlogs = dbBlogs.length > 0 ? dbBlogs : SAMPLE_BLOGS;
+
   // Real commenting system stored in local state + local storage
   const [blogComments, setBlogComments] = useState<Record<string, BlogComment[]>>(() => {
     try {
@@ -577,17 +594,17 @@ export function LandingPage({ onGetStarted, onSelectTab, subView = 'home', onCha
   };
 
   // Blog list computation
-  const filteredBlogs = SAMPLE_BLOGS.filter(blog => {
+  const filteredBlogs = allBlogs.filter(blog => {
     const matchesSearch = blog.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           blog.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          blog.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
+                          (blog.tags && blog.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())));
     
     const matchesCategory = selectedCategory === "All Categories" || blog.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   const getRelatedPosts = (currentBlog: BlogPost) => {
-    return SAMPLE_BLOGS.filter(b => b.id !== currentBlog.id && (b.category === currentBlog.category || b.tags.some(tag => currentBlog.tags.includes(tag)))).slice(0, 3);
+    return allBlogs.filter(b => b.id !== currentBlog.id && (b.category === currentBlog.category || (b.tags && b.tags.some(tag => currentBlog.tags?.includes(tag))))).slice(0, 3);
   };
 
   return (
@@ -852,7 +869,7 @@ export function LandingPage({ onGetStarted, onSelectTab, subView = 'home', onCha
                     
                     <div className="my-6">
                       <span className="text-5xl font-black text-slate-900 dark:text-white">
-                        {pricingPeriod === 'monthly' ? '₹200' : '₹1,000'}
+                        {pricingPeriod === 'monthly' ? '₹500' : '₹5,000'}
                       </span>
                       <span className="text-xs text-slate-400 dark:text-slate-500">
                         {pricingPeriod === 'monthly' ? '/ Month' : '/ Year'}
@@ -902,7 +919,7 @@ export function LandingPage({ onGetStarted, onSelectTab, subView = 'home', onCha
                     
                     <div className="my-6">
                       <span className="text-5xl font-black text-white">
-                        {pricingPeriod === 'monthly' ? '₹500' : '₹5,000'}
+                        {pricingPeriod === 'monthly' ? '₹1,000' : '₹10,000'}
                       </span>
                       <span className="text-xs text-slate-400">
                         {pricingPeriod === 'monthly' ? '/ Month' : '/ Year'}
