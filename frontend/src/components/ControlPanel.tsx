@@ -80,7 +80,13 @@ export const ControlPanel: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`AI Engine failed: ${response.statusText}`);
+        let errorMsg = `AI Engine failed: ${response.statusText}`;
+        try {
+          const errData = await response.json();
+          if (errData.details) errorMsg = errData.details;
+          else if (errData.error) errorMsg = errData.error;
+        } catch(e) {}
+        throw new Error(errorMsg);
       }
       
       const data = await response.json();
