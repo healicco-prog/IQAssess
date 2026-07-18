@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { 
   Lock, FileText, Users, Cpu, ArrowRight, Home, Settings, Link, LogOut, Search, UserPlus, X, Image as ImageIcon
@@ -22,6 +22,18 @@ export const ControlPanel: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('assessments, university, education, schooling');
+  const [existingBlogs, setExistingBlogs] = useState<any[]>([]);
+
+  const fetchBlogs = async () => {
+    const { data } = await supabase.from('blogs').select('*').order('publish_date', { ascending: false });
+    if (data) setExistingBlogs(data);
+  };
+
+  useEffect(() => {
+    if (isLoggedIn && activeTab === 'blogs') {
+      fetchBlogs();
+    }
+  }, [isLoggedIn, activeTab]);
 
   const ALL_IMAGES = [
     '1523050854058-8df90110c9f1', '1503676260728-1c00da094a0b', '1427504494785-3a9ca7044f45',
@@ -150,6 +162,7 @@ export const ControlPanel: React.FC = () => {
       setBlogStatus('Successfully published!');
       setBlogTitle('');
       setBlogContent('');
+      fetchBlogs();
     } catch (err: any) {
       setBlogStatus('Error publishing: ' + err.message);
     }
@@ -438,6 +451,43 @@ export const ControlPanel: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Published Blogs Table */}
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mt-8">
+                <div className="p-6 border-b border-slate-100">
+                  <h3 className="font-bold text-xl text-[#0F172A]">Published Blogs in Supabase</h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead className="bg-slate-50 text-slate-500 text-xs uppercase font-bold border-b border-slate-200">
+                      <tr>
+                        <th className="px-6 py-3">Title</th>
+                        <th className="px-6 py-3">Category</th>
+                        <th className="px-6 py-3">Date Published</th>
+                        <th className="px-6 py-3 text-right">Views</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 text-sm font-medium text-slate-700">
+                      {existingBlogs.map(b => (
+                        <tr key={b.id || b.title} className="hover:bg-slate-50 transition">
+                          <td className="px-6 py-4 truncate max-w-md">{b.title}</td>
+                          <td className="px-6 py-4">{b.category}</td>
+                          <td className="px-6 py-4 text-slate-500">{new Date(b.publish_date).toLocaleDateString()}</td>
+                          <td className="px-6 py-4 text-right">{b.views || 0}</td>
+                        </tr>
+                      ))}
+                      {existingBlogs.length === 0 && (
+                        <tr>
+                          <td colSpan={4} className="px-6 py-12 text-center text-slate-400 font-bold">
+                            No blogs found in database. Write your first one above!
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
             </div>
           )}
 
