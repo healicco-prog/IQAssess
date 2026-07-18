@@ -116,6 +116,15 @@ Return the response STRICTLY as a JSON object matching this schema, without mark
       contents: prompt,
       config: {
         responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            title: { type: Type.STRING },
+            excerpt: { type: Type.STRING },
+            content: { type: Type.STRING }
+          },
+          required: ["title", "excerpt", "content"]
+        }
       },
     });
 
