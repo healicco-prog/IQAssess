@@ -64,7 +64,7 @@ export const ControlPanel: React.FC = () => {
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ primaryKeyword, secondaryKeywords })
+        body: JSON.stringify({ primaryKeyword: kw, secondaryKeywords })
       });
 
       if (!response.ok) {
@@ -76,6 +76,9 @@ export const ControlPanel: React.FC = () => {
       
       setBlogTitle(data.title || '');
       setBlogContent(data.content || '');
+      setPrimaryKeyword(data.primaryKeyword || kw);
+      setSecondaryKeywords(data.secondaryKeywords || '');
+      setTags(data.tags || '');
       setBlogStatus('AI Generation Complete!');
     } catch (err: any) {
       console.error(err);

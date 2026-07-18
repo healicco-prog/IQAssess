@@ -108,7 +108,10 @@ Return the response STRICTLY as a JSON object matching this schema, without mark
 {
   "title": "A catchy, SEO-friendly title",
   "excerpt": "A short summary under 120 characters.",
-  "content": "The full blog content in Markdown format, using HTML tags where necessary for layout. Make it at least 3 detailed paragraphs."
+  "content": "The full blog content in Markdown format, using HTML tags where necessary for layout. Make it at least 3 detailed paragraphs.",
+  "primaryKeyword": "The optimal main SEO keyword generated for this topic",
+  "secondaryKeywords": "A comma separated list of 3-4 related secondary keywords",
+  "tags": "A comma separated list of 4-5 relevant tags"
 }`;
 
     const response = await ai.models.generateContent({
@@ -121,9 +124,12 @@ Return the response STRICTLY as a JSON object matching this schema, without mark
           properties: {
             title: { type: Type.STRING },
             excerpt: { type: Type.STRING },
-            content: { type: Type.STRING }
+            content: { type: Type.STRING },
+            primaryKeyword: { type: Type.STRING },
+            secondaryKeywords: { type: Type.STRING },
+            tags: { type: Type.STRING }
           },
-          required: ["title", "excerpt", "content"]
+          required: ["title", "excerpt", "content", "primaryKeyword", "secondaryKeywords", "tags"]
         }
       },
     });
