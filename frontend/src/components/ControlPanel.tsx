@@ -216,72 +216,97 @@ export const ControlPanel: React.FC = () => {
 
           {/* TAB: BLOGS */}
           {activeTab === 'blogs' && (
-            <div className="max-w-5xl mx-auto space-y-6">
-              <div>
-                <h2 className="text-2xl font-black text-[#0F172A]">Blog Publications Engine</h2>
-                <p className="text-sm text-slate-500">Author, edit, and publish content directly to the knowledge base.</p>
-              </div>
+            <div className="max-w-6xl mx-auto space-y-6">
               
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
-                <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                  <div>
-                    <h3 className="font-bold text-[#0F172A]">Create Article</h3>
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm">
+                {/* Header Row */}
+                <div className="p-6 flex items-center justify-between border-b border-slate-100">
+                  <div className="flex items-center gap-4">
+                    <h3 className="font-bold text-xl text-[#0F172A]">Create Article</h3>
+                    <button className="px-3 py-1.5 bg-[#f3f0ff] text-[#7c3aed] hover:bg-purple-100 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                      ✨ Write with AI (SEO)
+                    </button>
                   </div>
                   <div className="flex items-center gap-3">
-                    <button className="px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg text-xs font-bold flex items-center gap-1.5">
-                      ✨ Write with AI (SEO)
+                    <button className="px-4 py-2 text-slate-500 hover:text-slate-800 text-sm font-bold flex items-center gap-1.5 transition">
+                      ⊗ Cancel
+                    </button>
+                    <button className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-sm font-bold flex items-center gap-1.5 transition">
+                      💾 Save Draft
                     </button>
                     <button 
                       onClick={publishBlog}
-                      className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-bold"
+                      className="px-4 py-2 bg-[#10B981] hover:bg-emerald-600 text-white rounded-lg text-sm font-bold flex items-center gap-1.5 transition"
                     >
                       🌐 Publish Now
                     </button>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-6">
+                {/* Content Row */}
+                <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Left Column - Main Editor */}
                   <div className="col-span-2 space-y-4">
-                    <input 
-                      type="text" 
-                      value={blogTitle}
-                      onChange={e => setBlogTitle(e.target.value)}
-                      className="w-full text-2xl font-black text-[#0F172A] placeholder-slate-300 focus:outline-none" 
-                      placeholder="Article Title..."
-                    />
-                    
-                    <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col h-[400px]">
-                      <div className="bg-slate-50 border-b border-slate-200 p-2 flex gap-2">
-                        <button className="p-1.5 hover:bg-slate-200 rounded text-slate-600 font-bold text-xs">H2</button>
-                        <button className="p-1.5 hover:bg-slate-200 rounded text-slate-600 font-bold text-xs">B</button>
-                        <button className="p-1.5 hover:bg-slate-200 rounded text-slate-600 font-bold text-xs">I</button>
+                    <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col h-[500px]">
+                      {/* Title Input inside the box (like screenshot) */}
+                      <div className="border-b border-slate-200 p-4">
+                        <input 
+                          type="text" 
+                          value={blogTitle}
+                          onChange={e => setBlogTitle(e.target.value)}
+                          className="w-full text-2xl font-black text-[#0F172A] placeholder-slate-400 focus:outline-none" 
+                          placeholder="Article Title..."
+                        />
                       </div>
+                      
+                      {/* Toolbar */}
+                      <div className="bg-slate-50 border-b border-slate-200 p-3 flex items-center justify-between text-sm text-slate-600 font-bold">
+                        <div className="flex gap-4">
+                          <button className="hover:text-slate-900">H2</button>
+                          <button className="hover:text-slate-900">B</button>
+                          <button className="hover:text-slate-900 italic font-serif">I</button>
+                          <button className="hover:text-slate-900">List (ul)</button>
+                          <button className="hover:text-slate-900">&lt;/&gt;</button>
+                          <button className="hover:text-slate-900">Image</button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input type="checkbox" className="w-4 h-4 text-indigo-600 rounded border-slate-300" defaultChecked />
+                          <span className="text-indigo-600 text-xs">Mention IQAssess via AI</span>
+                        </div>
+                      </div>
+                      
+                      {/* Textarea */}
                       <textarea 
                         value={blogContent}
                         onChange={e => setBlogContent(e.target.value)}
-                        className="flex-1 p-4 w-full bg-white resize-none focus:outline-none text-slate-700 text-sm" 
-                        placeholder="Write your amazing article here..."
+                        className="flex-1 p-5 w-full bg-white resize-none focus:outline-none text-slate-600 text-base" 
+                        placeholder="Write your amazing article here... Use HTML tags for formatting if needed."
                       />
                     </div>
                   </div>
 
-                  <div className="col-span-1 space-y-4">
+                  {/* Right Column - Meta & SEO */}
+                  <div className="col-span-1 space-y-5">
                     <div>
-                      <label className="text-xs font-bold text-slate-500 mb-1 block">Primary Keyword</label>
-                      <input type="text" className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs focus:outline-none" placeholder="e.g. competency based medical education" />
+                      <label className="text-xs font-bold text-slate-400 mb-2 block tracking-wider uppercase">Primary Keyword</label>
+                      <input type="text" className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none text-slate-600 placeholder-slate-400" placeholder="e.g. ethical issues in AI" />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-slate-500 mb-1 block">Secondary Keywords (CSV)</label>
-                      <input type="text" className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs focus:outline-none" />
+                      <label className="text-xs font-bold text-slate-400 mb-2 block tracking-wider uppercase">Secondary Keywords (CSV)</label>
+                      <input type="text" className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none text-slate-600 placeholder-slate-400" placeholder="AI ethics, healthcare AI ethics" />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-slate-500 mb-1 block">Featured Image URL</label>
-                      <input type="text" className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs focus:outline-none mb-2" />
-                      <button className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5">
-                        ✨ Search Online
+                      <label className="text-xs font-bold text-slate-400 mb-2 block tracking-wider uppercase">Tags (CSV)</label>
+                      <input type="text" className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none text-slate-600 placeholder-slate-400" placeholder="AI, ethics, healthcare, technology" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-slate-400 mb-2 block tracking-wider uppercase">Featured Image URL</label>
+                      <input type="text" className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none text-slate-600 placeholder-slate-400 mb-3" placeholder="https://images.unsplash.com/..." />
+                      <button className="w-full py-3 bg-[#5b21b6] hover:bg-purple-800 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 uppercase tracking-wide transition shadow-sm">
+                        ✨ Search Online (IQAssess AI)
                       </button>
                     </div>
-                    {blogStatus && <div className="p-3 bg-blue-50 text-blue-700 rounded-lg text-xs font-bold">{blogStatus}</div>}
+                    {blogStatus && <div className="p-3 bg-blue-50 text-blue-700 rounded-lg text-xs font-bold border border-blue-100">{blogStatus}</div>}
                   </div>
                 </div>
               </div>
