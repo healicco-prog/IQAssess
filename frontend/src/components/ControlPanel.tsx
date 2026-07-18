@@ -23,20 +23,32 @@ export const ControlPanel: React.FC = () => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('assessments, university, education, schooling');
 
-  const educationImages = [
-    '1523050854058-8df90110c9f1',
-    '1503676260728-1c00da094a0b',
-    '1427504494785-3a9ca7044f45',
-    '1434030216411-0b793f4b4173',
-    '1519389950473-47ba0277781c',
-    '1497633762265-9d179a990aa6',
-    '1588072432836-e10032774350',
-    '1546410531-b3645b2323e2',
-    '1473649085228-583485e6e4d7',
-    '1509062522246-3755977927d7',
-    '1511629091441-ee46146481b6',
-    '1454165804606-c3d57bc86b40'
+  const ALL_IMAGES = [
+    '1523050854058-8df90110c9f1', '1503676260728-1c00da094a0b', '1427504494785-3a9ca7044f45',
+    '1434030216411-0b793f4b4173', '1519389950473-47ba0277781c', '1497633762265-9d179a990aa6',
+    '1588072432836-e10032774350', '1546410531-b3645b2323e2', '1473649085228-583485e6e4d7',
+    '1509062522246-3755977927d7', '1511629091441-ee46146481b6', '1454165804606-c3d57bc86b40',
+    '1501504905252-473c47e087f8', '1522202176988-66273c2fd55f', '1491841550275-ad7854e35ca6',
+    '1532012197267-da84d127e765', '1524178232363-1fb2b075b655', '1522071820081-009f0129c71c',
+    '1513258496099-481a80418140', '1558021212-514606647f90', '1531482615713-2afd69097998',
+    '1486312338219-ce68d2c6f44d', '1432888117247-36a5addd600d', '1521737604893-d14cc237f11d',
+    '1504851149312-7a075b496cc7', '1544396821-4dd40b938ad3', '1524995997946-a1c2e315a42f',
+    '1552664730-d307ca884978', '1580894732444-8ec09b30752b', '1509869175650-a1d97972541a'
   ];
+
+  const [displayImages, setDisplayImages] = useState(ALL_IMAGES.slice(0, 12));
+
+  const handleSearchImages = () => {
+    const shuffled = [...ALL_IMAGES].sort(() => 0.5 - Math.random());
+    setDisplayImages(shuffled.slice(0, 12));
+  };
+
+  const handleLoadMoreImages = () => {
+    const currentLength = displayImages.length;
+    if (currentLength >= ALL_IMAGES.length) return;
+    const nextImages = ALL_IMAGES.slice(currentLength, currentLength + 8);
+    setDisplayImages([...displayImages, ...nextImages]);
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -620,9 +632,13 @@ export const ControlPanel: React.FC = () => {
                   type="text" 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearchImages()}
                   className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-[#5b21b6] focus:bg-white transition"
                 />
-                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1.5 bg-[#5b21b6] hover:bg-purple-800 text-white rounded-lg text-xs font-bold transition">
+                <button 
+                  onClick={handleSearchImages}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1.5 bg-[#5b21b6] hover:bg-purple-800 text-white rounded-lg text-xs font-bold transition"
+                >
                   Search
                 </button>
               </div>
@@ -630,7 +646,7 @@ export const ControlPanel: React.FC = () => {
             
             <div className="flex-1 overflow-y-auto p-5">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {educationImages.map((id, index) => (
+                {displayImages.map((id, index) => (
                   <button 
                     key={index}
                     onClick={() => {
@@ -653,11 +669,16 @@ export const ControlPanel: React.FC = () => {
                   </button>
                 ))}
               </div>
-              <div className="mt-8 text-center pb-4">
-                <button className="px-5 py-2 border border-slate-200 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-50 transition">
-                  Load More Images...
-                </button>
-              </div>
+              {displayImages.length < ALL_IMAGES.length && (
+                <div className="mt-8 text-center pb-4">
+                  <button 
+                    onClick={handleLoadMoreImages}
+                    className="px-5 py-2 border border-slate-200 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-50 transition"
+                  >
+                    Load More Images...
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
