@@ -12,11 +12,14 @@ export const ControlPanel: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<'blogs' | 'users' | 'tokens'>('blogs');
 
-  // Dummy blog form
   const [blogTitle, setBlogTitle] = useState('');
   const [blogContent, setBlogContent] = useState('');
   const [blogStatus, setBlogStatus] = useState('');
   const [featuredImage, setFeaturedImage] = useState('');
+  const [primaryKeyword, setPrimaryKeyword] = useState('');
+  const [secondaryKeywords, setSecondaryKeywords] = useState('');
+  const [tags, setTags] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('assessments, university, education, schooling');
 
@@ -45,6 +48,39 @@ export const ControlPanel: React.FC = () => {
     }
   };
 
+  const handleGenerateAI = async () => {
+    if (!primaryKeyword.trim()) {
+      setBlogStatus('Please enter a Primary Keyword first.');
+      return;
+    }
+    setIsGenerating(true);
+    setBlogStatus('Generating blog via AI (This may take up to 30 seconds)...');
+    try {
+      const apiUrl = process.env.NODE_ENV === 'production' 
+          ? 'https://iqassess-backend-564555025983.asia-south1.run.app/api/ai/generate-blog'
+          : 'http://localhost:8080/api/ai/generate-blog';
+          
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ primaryKeyword, secondaryKeywords })
+      });
+
+      if (!response.ok) {
+        throw new Error(`AI Engine failed: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      setBlogTitle(data.title || '');
+      setBlogContent(data.content || '');
+      setBlogStatus('AI Generation Complete!');
+    } catch (err: any) {
+      setBlogStatus('Generation Error: ' + err.message);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const publishBlog = async () => {
     if (!blogTitle.trim() || !blogContent.trim()) {
       setBlogStatus('Please fill in title and content.');
@@ -54,16 +90,19 @@ export const ControlPanel: React.FC = () => {
     setBlogStatus('Publishing...');
     
     const newBlog = {
+      id: blogTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Date.now().toString().slice(-4),
       title: blogTitle,
-      excerpt: blogContent.substring(0, 100) + '...',
+      excerpt: blogContent.substring(0, 115) + '...',
       content: blogContent,
-      category: 'General',
+      category: 'Assessment Development',
+      tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : ['Education', 'AI'],
       author: { name: 'Dr. Narayana K (Super)', role: 'System Admin', avatar: 'DN' },
-      publish_date: new Date().toISOString(),
-      read_time: '2 min read',
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      readTime: '3 min read',
       gradient: 'from-blue-600 to-indigo-700',
       likes: 0,
-      views: 0
+      views: 0,
+      image: featuredImage || 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80'
     };
 
     const { error } = await supabase.from('blogs').insert([newBlog]);
@@ -241,8 +280,12 @@ export const ControlPanel: React.FC = () => {
                 <div className="p-6 flex items-center justify-between border-b border-slate-100">
                   <div className="flex items-center gap-4">
                     <h3 className="font-bold text-xl text-[#0F172A]">Create Article</h3>
-                    <button className="px-3 py-1.5 bg-[#f3f0ff] text-[#7c3aed] hover:bg-purple-100 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
-                      ✨ Write with AI (SEO)
+                    <button 
+                      onClick={handleGenerateAI}
+                      disabled={isGenerating}
+                      className="px-3 py-1.5 bg-[#f3f0ff] text-[#7c3aed] hover:bg-purple-100 rounded-lg text-xs font-bold flex items-center gap-1.5 transition disabled:opacity-50"
+                    >
+                      {isGenerating ? '✨ Generating...' : '✨ Write with AI (SEO)'}
                     </button>
                   </div>
                   <div className="flex items-center gap-3">
@@ -307,15 +350,33 @@ export const ControlPanel: React.FC = () => {
                   <div className="col-span-1 space-y-5">
                     <div>
                       <label className="text-xs font-bold text-slate-400 mb-2 block tracking-wider uppercase">Primary Keyword</label>
-                      <input type="text" className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none text-slate-600 placeholder-slate-400" placeholder="e.g. ethical issues in AI" />
+                      <input 
+                        type="text" 
+                        value={primaryKeyword}
+                        onChange={e => setPrimaryKeyword(e.target.value)}
+                        className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none text-slate-600 placeholder-slate-400" 
+                        placeholder="e.g. ethical issues in AI" 
+                      />
                     </div>
                     <div>
                       <label className="text-xs font-bold text-slate-400 mb-2 block tracking-wider uppercase">Secondary Keywords (CSV)</label>
-                      <input type="text" className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none text-slate-600 placeholder-slate-400" placeholder="AI ethics, healthcare AI ethics" />
+                      <input 
+                        type="text" 
+                        value={secondaryKeywords}
+                        onChange={e => setSecondaryKeywords(e.target.value)}
+                        className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none text-slate-600 placeholder-slate-400" 
+                        placeholder="AI ethics, healthcare AI ethics" 
+                      />
                     </div>
                     <div>
                       <label className="text-xs font-bold text-slate-400 mb-2 block tracking-wider uppercase">Tags (CSV)</label>
-                      <input type="text" className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none text-slate-600 placeholder-slate-400" placeholder="AI, ethics, healthcare, technology" />
+                      <input 
+                        type="text" 
+                        value={tags}
+                        onChange={e => setTags(e.target.value)}
+                        className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none text-slate-600 placeholder-slate-400" 
+                        placeholder="AI, ethics, healthcare, technology" 
+                      />
                     </div>
                     <div>
                       <label className="text-xs font-bold text-slate-400 mb-2 block tracking-wider uppercase">Featured Image URL</label>

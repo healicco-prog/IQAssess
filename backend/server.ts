@@ -4,6 +4,7 @@ import cors from "cors";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 import mammoth from "mammoth";
+import { createClient } from "@supabase/supabase-js";
 
 // Load environment variables
 dotenv.config();
@@ -57,6 +58,22 @@ if (apiKey && apiKey !== "MY_GEMINI_API_KEY") {
   console.log("No custom GEMINI_API_KEY detected in environment. Running in high-fidelity sandbox mode.");
 }
 
+// Initialize Supabase Admin Client securely
+let supabaseAdmin: ReturnType<typeof createClient> | null = null;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (supabaseUrl && supabaseServiceKey) {
+  try {
+    supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+    console.log("Supabase Service Role Client successfully initialized on the backend.");
+  } catch (e) {
+    console.error("Failed to initialize Supabase admin client:", e);
+  }
+} else {
+  console.log("Supabase credentials not found in environment. Database operations will fail.");
+}
+
 // Ensure error response helper
 const sendErrorResponse = (res: Response, status: number, message: string, error: any) => {
   res.status(status).json({
@@ -65,6 +82,53 @@ const sendErrorResponse = (res: Response, status: number, message: string, error
     fallbackActive: true
   });
 };
+
+/* =========================================
+   API ROUTE: Generate Blog Post
+   ========================================= */
+app.post("/api/ai/generate-blog", async (req: Request, res: Response) => {
+  const { primaryKeyword, secondaryKeywords } = req.body;
+
+  if (!primaryKeyword) {
+    res.status(400).json({ error: "Primary keyword is required" });
+    return;
+  }
+
+  if (!ai) {
+    return sendErrorResponse(res, 503, "AI Engine Not Configured", "GEMINI_API_KEY is missing");
+  }
+
+  try {
+    const prompt = `You are an expert educational content writer and SEO specialist.
+Write a highly engaging, professional blog article for an educational assessment platform called IQAssess.
+Primary Keyword: ${primaryKeyword}
+Secondary Keywords: ${secondaryKeywords || 'N/A'}
+
+Return the response STRICTLY as a JSON object matching this schema, without markdown formatting around the JSON:
+{
+  "title": "A catchy, SEO-friendly title",
+  "excerpt": "A short summary under 120 characters.",
+  "content": "The full blog content in Markdown format, using HTML tags where necessary for layout. Make it at least 3 detailed paragraphs."
+}`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      },
+    });
+
+    let rawText = response.text;
+    if (!rawText) throw new Error("Empty response from AI");
+
+    const parsedData = JSON.parse(rawText);
+    res.json(parsedData);
+  } catch (error: any) {
+    console.error("AI Blog Generation Error:", error);
+    sendErrorResponse(res, 500, "AI Blog Generation Failed", error);
+  }
+});
 
 /* =========================================
    API ROUTE: Grade Essay Descriptive Answer
