@@ -116,15 +116,14 @@ export const ControlPanel: React.FC = () => {
     setBlogStatus('Publishing...');
     
     const newBlog = {
-      id: blogTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Date.now().toString().slice(-4),
       title: blogTitle,
       excerpt: blogContent.substring(0, 115) + '...',
       content: blogContent,
       category: 'Assessment Development',
       tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : ['Education', 'AI'],
       author: { name: 'Dr. Narayana K (Super)', role: 'System Admin', avatar: 'DN' },
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      readTime: '3 min read',
+      publish_date: new Date().toISOString(),
+      read_time: '3 min read',
       gradient: 'from-blue-600 to-indigo-700',
       likes: 0,
       views: 0,

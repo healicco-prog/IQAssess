@@ -442,7 +442,12 @@ export function LandingPage({ onGetStarted, onSelectTab, subView = 'home', onCha
     async function fetchBlogs() {
       const { data, error } = await supabase.from('blogs').select('*');
       if (!error && data) {
-        setDbBlogs(data);
+        const mappedData = data.map((blog: any) => ({
+          ...blog,
+          date: blog.publish_date ? new Date(blog.publish_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : (blog.date || 'Today'),
+          readTime: blog.read_time || blog.readTime || '3 min read'
+        }));
+        setDbBlogs(mappedData);
       }
     }
     fetchBlogs();
