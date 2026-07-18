@@ -1,0 +1,319 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  /* Modern Warm Neutral Slate color scheme */
+  --color-slate-50: #fafbfd;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+
+  /* Sophisticated Indigo/Royal Blue for Standard & primary accents */
+  --color-blue-50: #eef2ff;
+  --color-blue-100: #e0e7ff;
+  --color-blue-200: #c7d2fe;
+  --color-blue-300: #a5b4fc;
+  --color-blue-400: #818cf8;
+  --color-blue-500: #4f46e5; /* Sophisticated indigo-blue as primary accent */
+  --color-blue-600: #4338ca;
+  --color-blue-700: #3730a3;
+  --color-blue-800: #1e1b4b;
+  --color-blue-900: #312e81;
+
+  /* Premium Sunset Gold/Bronze for Premium badges and buttons */
+  --color-amber-50: #fefcf6;
+  --color-amber-100: #fdf4db;
+  --color-amber-200: #fbe5b2;
+  --color-amber-300: #f9ce7f;
+  --color-amber-400: #f7b24c;
+  --color-amber-500: #b45309; /* Deep glowing saffron/bronze */
+  --color-amber-600: #92400e;
+  --color-amber-700: #78350f;
+  --color-amber-800: #451a03;
+  --color-amber-950: #1c0b02;
+
+  /* Soft emerald for positive feedback */
+  --color-emerald-500: #0d9488;
+  --color-emerald-600: #0f766e;
+  
+  /* Dynamic shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
+  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+  --shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.05), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+}
+
+/* Custom Global Refinement Styles for Pleasant Colors & Perfect Readability */
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Base text contrast defaults */
+html {
+  color-scheme: light;
+  background-color: var(--color-slate-50);
+  color: var(--color-slate-800);
+}
+
+html.dark {
+  color-scheme: dark;
+  background-color: #0b0f19;
+  color: var(--color-slate-100);
+}
+
+/* ==========================================
+   STRICT INTENT: BG/TEXT CONTRAST DIRECTIVES
+   ========================================== */
+
+/* 1. LIGHT BACKGROUNDS - FORCE DARK TEXT (whereever the background is light, the text is Dark) */
+html:not(.dark),
+.bg-white,
+.bg-slate-50,
+.bg-slate-100,
+.bg-slate-200,
+.bg-blue-50,
+.bg-amber-50,
+.bg-emerald-50,
+.bg-stone-50,
+.bg-stone-100,
+.bg-stone-200 {
+  --default-text-color: var(--color-slate-900);
+}
+
+/* Map light-mode gray text utility classes to deep, high-contrast, perfectly legible dark tones */
+:not(.dark) .text-slate-200, :not(.dark) .text-stone-200 { color: var(--color-slate-500) !important; }
+:not(.dark) .text-slate-300, :not(.dark) .text-stone-300 { color: var(--color-slate-600) !important; }
+:not(.dark) .text-slate-350 { color: var(--color-slate-650) !important; }
+:not(.dark) .text-slate-400, :not(.dark) .text-stone-400 { color: var(--color-slate-700) !important; }
+:not(.dark) .text-slate-450 { color: var(--color-slate-750) !important; }
+:not(.dark) .text-slate-500, :not(.dark) .text-stone-500 { color: var(--color-slate-800) !important; }
+:not(.dark) .text-slate-550 { color: var(--color-slate-800) !important; }
+:not(.dark) .text-slate-600, :not(.dark) .text-stone-600 { color: var(--color-slate-900) !important; }
+:not(.dark) .text-slate-650 { color: var(--color-slate-900) !important; }
+:not(.dark) .text-slate-700, :not(.dark) .text-stone-700 { color: var(--color-slate-900) !important; }
+:not(.dark) .text-slate-750 { color: var(--color-slate-900) !important; }
+:not(.dark) .text-slate-800, :not(.dark) .text-stone-800 { color: var(--color-slate-900) !important; }
+:not(.dark) .text-slate-850, :not(.dark) .text-stone-850 { color: var(--color-slate-950) !important; }
+:not(.dark) .text-slate-900, :not(.dark) .text-stone-900 { color: var(--color-slate-950) !important; }
+:not(.dark) .text-slate-950, :not(.dark) .text-stone-950 { color: var(--color-slate-950) !important; }
+
+/* 2. DARK BACKGROUNDS - FORCE LIGHT TEXT (whereever the background is dark, the text is light) */
+.dark,
+.bg-\[\#0B0F19\],
+.bg-\[\#0F172A\],
+.bg-\[\#1E293B\],
+.bg-slate-800,
+.bg-slate-900,
+.bg-slate-950,
+.bg-slate-900\/90,
+.bg-\[\#0F172A\]\/90,
+.bg-slate-950\/40,
+.bg-\[\#090D16\],
+.bg-slate-900\/80 {
+  --default-text-color: var(--color-slate-100);
+}
+
+/* Map dark-mode gray text utility classes to brilliant, high-contrast, perfectly legible light tones */
+html .dark .text-slate-100, html .dark .text-stone-100,
+html [class*="bg-[#0F172A]"] .text-slate-100, html [class*="bg-[#0F172A]"] .text-stone-100,
+html [class*="bg-[#0B0F19]"] .text-slate-100, html [class*="bg-[#0B0F19]"] .text-stone-100,
+html aside .text-slate-100, html aside .text-stone-100,
+html .bg-slate-900 .text-slate-100, html .bg-slate-900 .text-stone-100,
+html .bg-slate-950 .text-slate-100, html .bg-slate-950 .text-stone-100 { color: var(--color-slate-100) !important; }
+
+html .dark .text-slate-200, html .dark .text-stone-200,
+html [class*="bg-[#0F172A]"] .text-slate-200, html [class*="bg-[#0F172A]"] .text-stone-200,
+html [class*="bg-[#0B0F19]"] .text-slate-200, html [class*="bg-[#0B0F19]"] .text-stone-200,
+html aside .text-slate-200, html aside .text-stone-200,
+html .bg-slate-900 .text-slate-200, html .bg-slate-900 .text-stone-200,
+html .bg-slate-950 .text-slate-200, html .bg-slate-950 .text-stone-200 { color: var(--color-slate-200) !important; }
+
+html .dark .text-slate-300, html .dark .text-stone-300,
+html [class*="bg-[#0F172A]"] .text-slate-300, html [class*="bg-[#0F172A]"] .text-stone-300,
+html [class*="bg-[#0B0F19]"] .text-slate-300, html [class*="bg-[#0B0F19]"] .text-stone-300,
+html aside .text-slate-300, html aside .text-stone-300,
+html .bg-slate-900 .text-slate-300, html .bg-slate-900 .text-stone-300,
+html .bg-slate-950 .text-slate-300, html .bg-slate-950 .text-stone-300 { color: var(--color-slate-300) !important; }
+
+html .dark .text-slate-350,
+html [class*="bg-[#0F172A]"] .text-slate-350,
+html [class*="bg-[#0B0F19]"] .text-slate-350,
+html aside .text-slate-350,
+html .bg-slate-900 .text-slate-350,
+html .bg-slate-950 .text-slate-350 { color: var(--color-slate-350) !important; }
+
+html .dark .text-slate-400, html .dark .text-stone-400,
+html [class*="bg-[#0F172A]"] .text-slate-400, html [class*="bg-[#0F172A]"] .text-stone-400,
+html [class*="bg-[#0B0F19]"] .text-slate-400, html [class*="bg-[#0B0F19]"] .text-stone-400,
+html aside .text-slate-400, html aside .text-stone-400,
+html .bg-slate-900 .text-slate-400, html .bg-slate-900 .text-stone-400,
+html .bg-slate-950 .text-slate-400, html .bg-slate-950 .text-stone-400 { color: var(--color-slate-300) !important; }
+
+html .dark .text-slate-450,
+html [class*="bg-[#0F172A]"] .text-slate-450,
+html [class*="bg-[#0B0F19]"] .text-slate-450,
+html aside .text-slate-450,
+html .bg-slate-900 .text-slate-450,
+html .bg-slate-950 .text-slate-450 { color: var(--color-slate-200) !important; }
+
+html .dark .text-slate-500, html .dark .text-stone-500,
+html [class*="bg-[#0F172A]"] .text-slate-500, html [class*="bg-[#0F172A]"] .text-stone-500,
+html [class*="bg-[#0B0F19]"] .text-slate-500, html [class*="bg-[#0B0F19]"] .text-stone-500,
+html aside .text-slate-500, html aside .text-stone-500,
+html .bg-slate-900 .text-slate-500, html .bg-slate-900 .text-stone-500,
+html .bg-slate-950 .text-slate-500, html .bg-slate-950 .text-stone-500 { color: var(--color-slate-200) !important; }
+
+html .dark .text-slate-550,
+html [class*="bg-[#0F172A]"] .text-slate-550,
+html [class*="bg-[#0B0F19]"] .text-slate-550,
+html aside .text-slate-550,
+html .bg-slate-900 .text-slate-550,
+html .bg-slate-950 .text-slate-550 { color: var(--color-slate-100) !important; }
+
+html .dark .text-slate-600, html .dark .text-stone-600,
+html [class*="bg-[#0F172A]"] .text-slate-600, html [class*="bg-[#0F172A]"] .text-stone-600,
+html [class*="bg-[#0B0F19]"] .text-slate-600, html [class*="bg-[#0B0F19]"] .text-stone-600,
+html aside .text-slate-600, html aside .text-stone-600,
+html .bg-slate-900 .text-slate-600, html .bg-slate-900 .text-stone-600,
+html .bg-slate-950 .text-slate-600, html .bg-slate-950 .text-stone-600 { color: var(--color-slate-100) !important; }
+
+html .dark .text-slate-650,
+html [class*="bg-[#0F172A]"] .text-slate-650,
+html [class*="bg-[#0B0F19]"] .text-slate-650,
+html aside .text-slate-650,
+html .bg-slate-900 .text-slate-650,
+html .bg-slate-950 .text-slate-650 { color: var(--color-slate-50) !important; }
+
+html .dark .text-slate-700, html .dark .text-stone-700,
+html [class*="bg-[#0F172A]"] .text-slate-700, html [class*="bg-[#0F172A]"] .text-stone-700,
+html [class*="bg-[#0B0F19]"] .text-slate-700, html [class*="bg-[#0B0F19]"] .text-stone-700,
+html aside .text-slate-700, html aside .text-stone-700,
+html .bg-slate-900 .text-slate-700, html .bg-slate-900 .text-stone-700,
+html .bg-slate-950 .text-slate-700, html .bg-slate-950 .text-stone-700 { color: var(--color-slate-50) !important; }
+
+html .dark .text-slate-750,
+html [class*="bg-[#0F172A]"] .text-slate-750,
+html [class*="bg-[#0B0F19]"] .text-slate-750,
+html aside .text-slate-750,
+html .bg-slate-900 .text-slate-750,
+html .bg-slate-950 .text-slate-750 { color: var(--color-slate-50) !important; }
+
+html .dark .text-slate-800, html .dark .text-stone-800,
+html [class*="bg-[#0F172A]"] .text-slate-800, html [class*="bg-[#0F172A]"] .text-stone-800,
+html [class*="bg-[#0B0F19]"] .text-slate-800, html [class*="bg-[#0B0F19]"] .text-stone-800,
+html aside .text-slate-800, html aside .text-stone-800,
+html .bg-slate-900 .text-slate-800, html .bg-slate-900 .text-stone-800,
+html .bg-slate-950 .text-slate-800, html .bg-slate-950 .text-stone-800 { color: var(--color-slate-50) !important; }
+
+html .dark .text-slate-850, html .dark .text-stone-850,
+html [class*="bg-[#0F172A]"] .text-slate-850, html [class*="bg-[#0F172A]"] .text-stone-850,
+html [class*="bg-[#0B0F19]"] .text-slate-850, html [class*="bg-[#0B0F19]"] .text-stone-850,
+html aside .text-slate-850, html aside .text-stone-850,
+html .bg-slate-900 .text-slate-850, html .bg-slate-900 .text-stone-850,
+html .bg-slate-950 .text-slate-850, html .bg-slate-950 .text-stone-850 { color: var(--color-slate-50) !important; }
+
+html .dark .text-slate-900, html .dark .text-stone-900,
+html [class*="bg-[#0F172A]"] .text-slate-900, html [class*="bg-[#0F172A]"] .text-stone-900,
+html [class*="bg-[#0B0F19]"] .text-slate-900, html [class*="bg-[#0B0F19]"] .text-stone-900,
+html aside .text-slate-900, html aside .text-stone-900,
+html .bg-slate-900 .text-slate-900, html .bg-slate-900 .text-stone-900,
+html .bg-slate-950 .text-slate-900, html .bg-slate-950 .text-stone-900 { color: var(--color-slate-50) !important; }
+
+html .dark .text-slate-950, html .dark .text-stone-950,
+html [class*="bg-[#0F172A]"] .text-slate-950, html [class*="bg-[#0F172A]"] .text-stone-950,
+html [class*="bg-[#0B0F19]"] .text-slate-950, html [class*="bg-[#0B0F19]"] .text-stone-950,
+html aside .text-slate-950, html aside .text-stone-950,
+html .bg-slate-900 .text-slate-950, html .bg-slate-900 .text-stone-950,
+html .bg-slate-950 .text-slate-950, html .bg-slate-950 .text-stone-950 { color: var(--color-slate-50) !important; }
+
+/* Override hardcoded primary brand blue (#2563EB) with our sophisticated Indigo-Blue */
+.text-\[\#2563EB\] {
+  color: var(--color-blue-500) !important;
+}
+
+.bg-\[\#2563EB\] {
+  background-color: var(--color-blue-500) !important;
+}
+
+.border-\[\#2563EB\] {
+  border-color: var(--color-blue-500) !important;
+}
+
+/* Override hover selectors if needed */
+.hover\:text-blue-700:hover {
+  color: var(--color-blue-600) !important;
+}
+
+/* Softer card aesthetics for light mode */
+.shadow-sm {
+  box-shadow: var(--shadow-sm) !important;
+}
+
+/* Beautiful custom transition animations to make the UI look alive and pleasant */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Soft scrollbars for code blocks and textareas */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-slate-200);
+  border-radius: 4px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-slate-800);
+}
+
+@media print {
+  /* Hide everything by default */
+  body * {
+    visibility: hidden;
+  }
+  /* Show and position the printable OMR sheet perfectly */
+  #omr-printable-sheet, #omr-printable-sheet * {
+    visibility: visible;
+  }
+  #omr-printable-sheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: white !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  /* Force white background and black text on printing */
+  html, body {
+    background-color: #ffffff !important;
+    background-image: none !important;
+  }
+  #omr-printable-sheet * {
+    color: #000000 !important;
+    border-color: #000000 !important;
+  }
+}
+

@@ -1,0 +1,68 @@
+1457: const [essayBuilderInstitution, setEssayBuilderInstitution] = useState<string>('');
+1458: const [essayBuilderCourse, setEssayBuilderCourse] = useState<string>(getInitialHistory('course'));
+1459: const [essayBuilderSubject, setEssayBuilderSubject] = useState<string>(getInitialHistory('subject'));
+1460: const [essayBuilderTopic, setEssayBuilderTopic] = useState<string>(getInitialHistory('essay_topic'));
+1461: const [essayBuilderGrade, setEssayBuilderGrade] = useState<string>('Undergraduate');
+1462: const [essayBuilderBloom, setEssayBuilderBloom] = useState<string>('Evaluation (Level 5)');
+1463: const [essayBuilderGuidelines, setEssayBuilderGuidelines] = useState<string>('Focus on textual evidence, historical context, and critical arguments.');
+1464: const [essayBuilderOutcomes, setEssayBuilderOutcomes] = useState<string>('Analyze structural elements of romanticism and gothic horror.');
+1465: const [essayBuilderCount, setEssayBuilderCount] = useState<number>(3);
+1466: const [essayBuilderLoading, setEssayBuilderLoading] = useState<boolean>(false);
+1467: const [essayBuilderResult, setEssayBuilderResult] = useState<any>(null);
+1498: if (!essayBuilderResult) {
+1504: title: essayBuilderResult.assessmentName || `Essay: ${essayBuilderTopic}`,
+1505: subject: essayBuilderResult.subjectDetails || essayBuilderSubject,
+1506: topic: essayBuilderTopic,
+1507: grade: essayBuilderGrade,
+1508: bloom: essayBuilderBloom,
+1510: data: essayBuilderResult
+1523: setEssayBuilderResult(essay.data);
+1524: setEssayBuilderSubject(essay.subject || essay.data.subjectDetails || '');
+1525: setEssayBuilderTopic(essay.topic || essay.data.topicDetails || '');
+1526: setEssayBuilderGrade(essay.grade || '');
+1527: setEssayBuilderBloom(essay.bloom || '');
+1602: const runEssayBuilderGeneration = async () => {
+1603: if (!essayBuilderCourse.trim()) {
+1607: if (!essayBuilderSubject.trim()) {
+1612: setEssayBuilderLoading(true);
+1613: setEssayBuilderResult(null);
+1619: assessmentName: `Essay Sheet: ${essayBuilderTopic}`,
+1622: institutionDetails: `${essayBuilderCourse} - Dept of ${essayBuilderSubject}`,
+1623: subjectDetails: essayBuilderSubject,
+1624: topicDetails: essayBuilderTopic,
+1625: guidelines: essayBuilderGuidelines,
+1626: learningOutcomes: essayBuilderOutcomes,
+1627: bloomLevel: essayBuilderBloom,
+1628: numAssessments: essayBuilderCount
+1632: setEssayBuilderResult(data);
+1637: setEssayBuilderLoading(false);
+1676: const printEssayBuilderSheet = () => {
+9530: institution={essayBuilderInstitution} setInstitution={setEssayBuilderInstitution}
+9531: course={essayBuilderCourse} setCourse={setEssayBuilderCourse}
+9532: subject={essayBuilderSubject} setSubject={setEssayBuilderSubject}
+9533: topic={essayBuilderTopic} setTopic={setEssayBuilderTopic}
+9542: value={essayBuilderGrade}
+9543: onChange={(e) => setEssayBuilderGrade(e.target.value)}
+9556: value={essayBuilderBloom}
+9557: onChange={(e) => setEssayBuilderBloom(e.target.value)}
+9573: value={essayBuilderGuidelines}
+9574: onChange={(e) => setEssayBuilderGuidelines(e.target.value)}
+9584: value={essayBuilderOutcomes}
+9585: onChange={(e) => setEssayBuilderOutcomes(e.target.value)}
+9594: <span className="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">{essayBuilderCount}</span>
+9600: value={essayBuilderCount}
+9601: onChange={(e) => setEssayBuilderCount(Number(e.target.value))}
+9607: onClick={runEssayBuilderGeneration}
+9608: disabled={essayBuilderLoading}
+9611: {essayBuilderLoading ? (
+9667: {essayBuilderLoading ? (
+9673: ) : essayBuilderResult ? (
+9684: onClick={printEssayBuilderSheet}
+9699: {essayBuilderResult.institutionDetails || "PACIFIC WEST ACADEMIC WORKSHEET"}
+9702: {essayBuilderResult.assessmentName || "Essay Writing Assessment"}
+9705: <span>SUBJECT: {essayBuilderResult.subjectDetails || essayBuilderSubject}</span>
+9706: <span>GRADE LEVEL: {essayBuilderGrade}</span>
+9707: <span>BLOOM LEVEL: {essayBuilderBloom}</span>
+9713: <p><strong>Mapped Outcomes:</strong> {essayBuilderResult.learningOutcomes || essayBuilderOutcomes}</p>
+9714: <p><strong>Worksheet Guidelines:</strong> {essayBuilderGuidelines}</p>
+9719: {essayBuilderResult.items && essayBuilderResult.items.map((item: any, idx: number) => (

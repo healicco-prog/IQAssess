@@ -1,0 +1,8 @@
+{
+  "name": "IQAssess- Faculty",
+  "description": "AI-Powered Assessment Management System designed to create worksheets, manage double-blind reviews, grade essay questions, evaluate full papers, and analyze outcomes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
