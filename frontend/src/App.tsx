@@ -15,6 +15,7 @@ import { PremiumLockScreen } from './components/PremiumLockScreen';
 import { BlueprintAssessor } from './components/BlueprintAssessor';
 import ItemAnalysisAnalytics from './components/ItemAnalysisAnalytics';
 import { HistoryInput } from './components/HistoryInput';
+import { ControlPanel } from './components/ControlPanel';
 import { CurriculumManager, loadCurriculumData } from './components/CurriculumManager';
 import { CurriculumSelectors } from './components/CurriculumSelectors';
 import { jsPDF } from 'jspdf';
@@ -143,9 +144,10 @@ export default function App() {
   const [selectedReportFormat, setSelectedReportFormat] = useState<'PDF' | 'Excel' | 'Word' | 'CSV'>('PDF');
   const [isGeneratingReport, setIsGeneratingReport] = useState<boolean>(false);
 
-  const [landingSubView, setLandingSubView] = useState<'home' | 'blogs' | 'login'>(() => {
+  const [landingSubView, setLandingSubView] = useState<'home' | 'blogs' | 'login' | 'control-panel'>(() => {
     if (window.location.pathname === '/blogs' || window.location.hash === '#blogs') return 'blogs';
     if (window.location.pathname === '/login' || window.location.hash === '#login') return 'login';
+    if (window.location.pathname === '/contrl-panl' || window.location.hash === '#contrl-panl') return 'control-panel';
     return 'home';
   });
 
@@ -155,6 +157,8 @@ export default function App() {
         setLandingSubView('blogs');
       } else if (window.location.pathname === '/login' || window.location.hash === '#login') {
         setLandingSubView('login');
+      } else if (window.location.pathname === '/contrl-panl' || window.location.hash === '#contrl-panl') {
+        setLandingSubView('control-panel');
       } else {
         setLandingSubView('home');
       }
@@ -4527,12 +4531,15 @@ In defining monopoly power, the Supreme Court in Alcoa (1945) famously noted tha
             </div>
           </header>
 
-          <LandingPage 
-            subView={landingSubView}
-            onChangeSubView={(val) => {
-              setLandingSubView(val);
-              window.history.pushState(null, '', val === 'blogs' ? '/blogs' : val === 'login' ? '/login' : '/');
-            }}
+          {landingSubView === 'control-panel' ? (
+            <ControlPanel />
+          ) : (
+            <LandingPage 
+              subView={landingSubView}
+              onChangeSubView={(val) => {
+                setLandingSubView(val);
+                window.history.pushState(null, '', val === 'blogs' ? '/blogs' : val === 'login' ? '/login' : '/');
+              }}
             onGetStarted={(customSession) => {
               setShowLanding(false);
               if (customSession && typeof customSession === 'object' && 'username' in customSession) {
@@ -4563,6 +4570,7 @@ In defining monopoly power, the Supreme Court in Alcoa (1945) famously noted tha
               }
             }}
           />
+          )}
 
           {/* Floating global information footstep */}
           <footer className="py-8 bg-slate-900 text-slate-500 text-xs border-t border-slate-800 mt-20">
