@@ -49,10 +49,13 @@ export const ControlPanel: React.FC = () => {
   };
 
   const handleGenerateAI = async () => {
-    if (!primaryKeyword.trim()) {
-      setBlogStatus('Please enter a Primary Keyword first.');
-      return;
+    let kw = primaryKeyword.trim();
+    if (!kw) {
+      kw = "Future of Educational Assessments with AI";
+      setPrimaryKeyword(kw);
+      setBlogStatus('Auto-filled default primary keyword...');
     }
+    
     setIsGenerating(true);
     setBlogStatus('Generating blog via AI (This may take up to 30 seconds)...');
     try {
@@ -69,10 +72,14 @@ export const ControlPanel: React.FC = () => {
       }
       
       const data = await response.json();
+      if (data.error) throw new Error(data.error);
+      
       setBlogTitle(data.title || '');
       setBlogContent(data.content || '');
       setBlogStatus('AI Generation Complete!');
     } catch (err: any) {
+      console.error(err);
+      alert('Generation Error: ' + err.message);
       setBlogStatus('Generation Error: ' + err.message);
     } finally {
       setIsGenerating(false);
