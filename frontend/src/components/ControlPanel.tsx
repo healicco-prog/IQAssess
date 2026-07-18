@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { 
-  Lock, FileText, Users, Cpu, ArrowRight, Home, Settings, Link, LogOut, Search, UserPlus
+  Lock, FileText, Users, Cpu, ArrowRight, Home, Settings, Link, LogOut, Search, UserPlus, X, Image as ImageIcon
 } from 'lucide-react';
 
 export const ControlPanel: React.FC = () => {
@@ -16,6 +16,24 @@ export const ControlPanel: React.FC = () => {
   const [blogTitle, setBlogTitle] = useState('');
   const [blogContent, setBlogContent] = useState('');
   const [blogStatus, setBlogStatus] = useState('');
+  const [featuredImage, setFeaturedImage] = useState('');
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('assessments, university, education, schooling');
+
+  const educationImages = [
+    '1523050854058-8df90110c9f1',
+    '1503676260728-1c00da094a0b',
+    '1427504494785-3a9ca7044f45',
+    '1434030216411-0b793f4b4173',
+    '1519389950473-47ba0277781c',
+    '1497633762265-9d179a990aa6',
+    '1588072432836-e10032774350',
+    '1546410531-b3645b2323e2',
+    '1473649085228-583485e6e4d7',
+    '1509062522246-3755977927d7',
+    '1511629091441-ee46146481b6',
+    '1454165804606-c3d57bc86b40'
+  ];
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -301,8 +319,17 @@ export const ControlPanel: React.FC = () => {
                     </div>
                     <div>
                       <label className="text-xs font-bold text-slate-400 mb-2 block tracking-wider uppercase">Featured Image URL</label>
-                      <input type="text" className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none text-slate-600 placeholder-slate-400 mb-3" placeholder="https://images.unsplash.com/..." />
-                      <button className="w-full py-3 bg-[#5b21b6] hover:bg-purple-800 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 uppercase tracking-wide transition shadow-sm">
+                      <input 
+                        type="text" 
+                        value={featuredImage}
+                        onChange={e => setFeaturedImage(e.target.value)}
+                        className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none text-slate-600 placeholder-slate-400 mb-3" 
+                        placeholder="https://images.unsplash.com/..." 
+                      />
+                      <button 
+                        onClick={() => setShowImageModal(true)}
+                        className="w-full py-3 bg-[#5b21b6] hover:bg-purple-800 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 uppercase tracking-wide transition shadow-sm"
+                      >
                         ✨ Search Online (IQAssess AI)
                       </button>
                     </div>
@@ -494,6 +521,78 @@ export const ControlPanel: React.FC = () => {
 
         </div>
       </div>
+      
+      {/* IMAGE SEARCH MODAL */}
+      {showImageModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 font-sans">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[85vh] flex flex-col overflow-hidden">
+            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#5b21b6] text-white rounded-lg flex items-center justify-center">
+                  <ImageIcon size={20} />
+                </div>
+                <div>
+                  <h3 className="font-black text-lg text-[#0F172A]">IQAssess AI Image Search</h3>
+                  <p className="text-xs text-slate-500 font-medium">1,245+ high-quality images found for this topic</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowImageModal(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-200 text-slate-500 transition"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-5 border-b border-slate-100">
+              <div className="relative">
+                <Search size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                <input 
+                  type="text" 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-[#5b21b6] focus:bg-white transition"
+                />
+                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1.5 bg-[#5b21b6] hover:bg-purple-800 text-white rounded-lg text-xs font-bold transition">
+                  Search
+                </button>
+              </div>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {educationImages.map((id, index) => (
+                  <button 
+                    key={index}
+                    onClick={() => {
+                      setFeaturedImage(`https://images.unsplash.com/photo-${id}?w=800&q=80`);
+                      setShowImageModal(false);
+                    }}
+                    className="group relative aspect-video bg-slate-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition focus:outline-none focus:ring-4 focus:ring-purple-200"
+                  >
+                    <img 
+                      src={`https://images.unsplash.com/photo-${id}?w=400&q=80`} 
+                      alt="Education cover" 
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition flex items-center justify-center">
+                      <span className="opacity-0 group-hover:opacity-100 bg-white text-slate-900 text-[10px] font-black px-3 py-1.5 rounded-full shadow-lg transform translate-y-2 group-hover:translate-y-0 transition">
+                        USE IMAGE
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <div className="mt-8 text-center pb-4">
+                <button className="px-5 py-2 border border-slate-200 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-50 transition">
+                  Load More Images...
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
