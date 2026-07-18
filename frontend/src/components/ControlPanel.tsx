@@ -56,9 +56,7 @@ export const ControlPanel: React.FC = () => {
     setIsGenerating(true);
     setBlogStatus('Generating blog via AI (This may take up to 30 seconds)...');
     try {
-      const apiUrl = process.env.NODE_ENV === 'production' 
-          ? 'https://iqassess-backend-564555025983.asia-south1.run.app/api/ai/generate-blog'
-          : 'http://localhost:8080/api/ai/generate-blog';
+      const apiUrl = '/api/ai/generate-blog';
           
       const response = await fetch(apiUrl, {
         method: 'POST',
