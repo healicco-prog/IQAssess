@@ -146,6 +146,27 @@ Return the response STRICTLY as a JSON object matching this schema, without mark
 });
 
 /* =========================================
+   API ROUTE: Publish Blog (Bypass RLS)
+   ========================================= */
+app.post("/api/blogs/publish", async (req: Request, res: Response) => {
+  if (!supabaseAdmin) {
+    return sendErrorResponse(res, 503, "Database Not Configured", "Supabase Admin client is missing on backend");
+  }
+  try {
+    const newBlog = req.body;
+    if (!newBlog || !newBlog.title) throw new Error("Blog data is invalid or missing");
+
+    const { data, error } = await supabaseAdmin.from('blogs').insert([newBlog]).select();
+    if (error) throw error;
+    
+    res.json({ success: true, data });
+  } catch (error: any) {
+    console.error("Publish Blog Error:", error);
+    sendErrorResponse(res, 500, "Failed to publish blog", error);
+  }
+});
+
+/* =========================================
    API ROUTE: Grade Essay Descriptive Answer
    ========================================= */
 app.post("/api/ai/grade-essay", async (req: Request, res: Response) => {

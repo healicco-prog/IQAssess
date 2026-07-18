@@ -130,13 +130,28 @@ export const ControlPanel: React.FC = () => {
       image: featuredImage || 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80'
     };
 
-    const { error } = await supabase.from('blogs').insert([newBlog]);
-    if (error) {
-      setBlogStatus('Error publishing: ' + error.message);
-    } else {
+    try {
+      const apiUrl = '/api/blogs/publish';
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newBlog) // Note: endpoint expects newBlog directly in req.body
+      });
+
+      if (!response.ok) {
+        let errorMsg = `Publish failed: ${response.statusText}`;
+        try {
+          const errData = await response.json();
+          errorMsg = errData.details || errData.error || errorMsg;
+        } catch(e) {}
+        throw new Error(errorMsg);
+      }
+      
       setBlogStatus('Successfully published!');
       setBlogTitle('');
       setBlogContent('');
+    } catch (err: any) {
+      setBlogStatus('Error publishing: ' + err.message);
     }
   };
 
